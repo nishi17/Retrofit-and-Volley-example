@@ -12,7 +12,7 @@ import com.nishi.developer.retrofitvolleyexample.R;
 import java.util.ArrayList;
 
 public class Volley_RecyclerViewActivity extends AppCompatActivity {
-    RecyclerView recyclerView;
+    private RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

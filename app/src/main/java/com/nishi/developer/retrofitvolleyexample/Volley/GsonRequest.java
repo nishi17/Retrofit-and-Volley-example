@@ -19,6 +19,9 @@ public class GsonRequest extends Request {
     private final Map params;
     private final Response.Listener listener;
 
+
+/*    A Custom Request requires the two methods, parseNetworkResponse and deliverResponse to be overridden.*/
+
     public GsonRequest(String url, Class myClass, Map headers,
                        Response.Listener listener, Response.ErrorListener errorListener) {
         super(Method.GET, url, errorListener);
@@ -48,8 +51,8 @@ public class GsonRequest extends Request {
         return params != null ? params : super.getParams();
     }
 
-
-
+   /* In the deliverResponse method, we’ve triggered a callback to the Response.
+   Listener’s onResponse method*/
     @Override
     protected void deliverResponse(Object response) {
         if (null != listener) {
@@ -57,6 +60,9 @@ public class GsonRequest extends Request {
         }
     }
 
+
+    /*The parseNetworkResponse parses the raw network response. In the above code, Gson library serializes it into a POJO class.
+    The result is available in the deliverResponse method.*/
     @Override
     protected Response parseNetworkResponse(NetworkResponse response) {
         try {

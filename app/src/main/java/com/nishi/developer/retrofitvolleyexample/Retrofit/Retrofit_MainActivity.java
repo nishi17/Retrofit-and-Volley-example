@@ -1,25 +1,23 @@
-package com.nishi.developer.retrofitvolleyexample;
+package com.nishi.developer.retrofitvolleyexample.Retrofit;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.nishi.developer.retrofitvolleyexample.Retrofit.POJO.DatumUserList;
-import com.nishi.developer.retrofitvolleyexample.Retrofit.POJO.UserList;
-import com.nishi.developer.retrofitvolleyexample.Retrofit.Retrofit_APIClient;
-import com.nishi.developer.retrofitvolleyexample.Retrofit.Retrofit_APIInterface;
-
-import java.util.List;
+import com.nishi.developer.retrofitvolleyexample.R;
+import com.nishi.developer.retrofitvolleyexample.Retrofit.POJO.User;
+import com.nishi.developer.retrofitvolleyexample.Volley.Volley_MainActivity;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class Retrofit_MainActivity extends AppCompatActivity {
+public class Retrofit_MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    TextView responseText;
-    Retrofit_APIInterface apiInterface;
+    private TextView responseText, tv_volleyExample;
+    private Retrofit_APIInterface apiInterface;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,7 +25,8 @@ public class Retrofit_MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         responseText = (TextView) findViewById(R.id.responseText);
-
+        tv_volleyExample = (TextView) findViewById(R.id.tv_volleyExample);
+        tv_volleyExample.setOnClickListener(this);
         apiInterface = Retrofit_APIClient.getClient().create(Retrofit_APIInterface.class);
 
 
@@ -36,13 +35,13 @@ public class Retrofit_MainActivity extends AppCompatActivity {
          **/
 
 
-       /* Call<MultipleResource> call = apiInterface.doGetListResources();
+        /*Call<MultipleResource> call = apiInterface.doGetListResources();
         call.enqueue(new Callback<MultipleResource>() {
             @Override
             public void onResponse(Call<MultipleResource> call, Response<MultipleResource> response) {
 
 
-                Log.d("TAG", response.code() + "");
+                Log.e("TAG", response.code() + "");
 
                 String displayResponse = "";
 
@@ -52,7 +51,7 @@ public class Retrofit_MainActivity extends AppCompatActivity {
                 Integer totalPages = resource.totalPages;
                 List<Datum> datumList = resource.data;
 
-                displayResponse += text + " Page\n" + total + " Total\n" + totalPages + " Total Pages\n";
+                displayResponse += text + " Page\n" + total + " Total\n" + totalPages + " Total Pages\n\n\n";
 
                 for (Datum datum : datumList) {
                     displayResponse += datum.id + " " + datum.name + " " + datum.pantoneValue + " " + datum.year + "\n";
@@ -100,7 +99,7 @@ public class Retrofit_MainActivity extends AppCompatActivity {
         /**
          GET List Users
          **/
-  /*      Call<UserList> call2 = apiInterface.doGetUserList("2");
+   /*     Call<UserList> call2 = apiInterface.doGetUserList("2");
 
         call2.enqueue(new Callback<UserList>() {
             @Override
@@ -119,7 +118,7 @@ public class Retrofit_MainActivity extends AppCompatActivity {
                 List<DatumUserList> datumList = userList.data;
 
 
-                displayResponse += text + " page\n" + total + " total\n" + totalPages + " totalPages\n";
+                displayResponse += text + " page\n" + total + " total\n" + totalPages + " totalPages\n\n";
 
 
 //                Toast.makeText(getApplicationContext(), text + " page\n" + total + " total\n" + totalPages + " totalPages\n", Toast.LENGTH_SHORT).show();
@@ -128,7 +127,7 @@ public class Retrofit_MainActivity extends AppCompatActivity {
 
                     //  Toast.makeText(getApplicationContext(), "id : " + datum.id + " name: " + datum.first_name + " " + datum.last_name + " avatar: " + datum.avatar, Toast.LENGTH_SHORT).show();
 
-                    displayResponse += " id : " + datum.id + " name: " + datum.first_name + " " + datum.last_name + " avatar: " + datum.avatar + "\n";
+                    displayResponse += " \nid : " + datum.id + " \nname: " + datum.first_name + " " + datum.last_name + " \navatar: " + datum.avatar + "\n";
 
 
                 }
@@ -147,49 +146,50 @@ public class Retrofit_MainActivity extends AppCompatActivity {
         /**
          POST name and job Url encoded.
          **/
-        Call<UserList> call3 = apiInterface.doCreateUserWithField("morpheus", "leader");
+        Call<User> call3 = apiInterface.doCreateUserWithField("morpheus", "leader");
 
-        call3.enqueue(new Callback<UserList>() {
+        call3.enqueue(new Callback<User>() {
             @Override
-            public void onResponse(Call<UserList> call, Response<UserList> response) {
+            public void onResponse(Call<User> call, Response<User> response) {
 
                 String displayResponse = "";
 
-                UserList userList = response.body();
+                User userList = response.body();
 
-                Integer text = userList.page;
+                String id = userList.id;
 
-                Integer total = userList.total;
+                String job = userList.job;
 
-                Integer totalPages = userList.totalPages;
+                String name = userList.name;
 
-                List<DatumUserList> datumList = userList.data;
+                String crateddate = userList.createdAt;
 
-                Toast.makeText(getApplicationContext(), text + " page\n" + total + " total\n" + totalPages + " totalPages\n", Toast.LENGTH_SHORT).show();
-
-                displayResponse += text + " page\n" + total + " total\n" + totalPages + " totalPages\n";
-
-
-                for (DatumUserList datum : datumList) {
-
-                    Toast.makeText(getApplicationContext(), "id : " + datum.id + " name: " + datum.first_name + " " + datum.last_name + " avatar: " + datum.avatar, Toast.LENGTH_SHORT).show();
-
-                    displayResponse += " id : " + datum.id + " name: " + datum.first_name + " " + datum.last_name + " avatar: " + datum.avatar + "\n";
-
-
-                }
+                displayResponse = "\n\n\n ID: " + id + "\n NAME: " + name + "\n JOB: " + job + "\n CREATED At: " + crateddate;
 
                 responseText.setText(displayResponse);
 
             }
 
             @Override
-            public void onFailure(Call<UserList> call, Throwable t) {
+            public void onFailure(Call<User> call, Throwable t) {
 
                 call.cancel();
 
             }
         });
 
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.tv_volleyExample:
+
+                Intent intent = new Intent(Retrofit_MainActivity.this, Volley_MainActivity.class);
+                startActivity(intent);
+
+
+                break;
+        }
     }
 }

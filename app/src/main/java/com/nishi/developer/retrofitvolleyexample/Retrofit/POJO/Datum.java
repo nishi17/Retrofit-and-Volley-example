@@ -2,7 +2,9 @@ package com.nishi.developer.retrofitvolleyexample.Retrofit.POJO;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Datum {
+import java.io.Serializable;
+
+public class Datum  implements Serializable {
 
 /*    The POJO classes are wrapped into a typed Retrofit Call class.
     Note: A JSONArray is serialised a List of Objects in the POJO classes*/

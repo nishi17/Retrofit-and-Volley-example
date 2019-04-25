@@ -7,6 +7,10 @@ import java.util.List;
 
 public class Volley_UserList implements Serializable {
 
+/*
+    The above class implements Serializable since an instance of it would passed as Bundle in Intents
+*/
+
     @SerializedName("page")
     public Integer page;
     @SerializedName("per_page")

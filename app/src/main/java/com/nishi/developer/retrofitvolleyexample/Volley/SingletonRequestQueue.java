@@ -11,6 +11,13 @@ public class SingletonRequestQueue {
     private Context mContext;
     private RequestQueue mRequestQueue;
 
+/*
+    getInstance() and getRequestQueue() methods create an instance of
+    SingletonRequestQueue and RequestQueue respectively for
+    the first time and re-use it everywhere.
+*/
+
+
     private SingletonRequestQueue(Context context) {
         mContext = context;
         mRequestQueue = getRequestQueue();

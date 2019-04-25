@@ -3,10 +3,11 @@ package com.nishi.developer.retrofitvolleyexample.Retrofit.POJO;
 import com.google.gson.annotations.SerializedName;
 import com.nishi.developer.retrofitvolleyexample.Retrofit.POJO.DatumUserList;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserList {
+public class UserList implements Serializable {
 
 
     @SerializedName("page")

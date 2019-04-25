@@ -3,9 +3,10 @@ package com.nishi.developer.retrofitvolleyexample.Retrofit.POJO;
 import com.google.gson.annotations.SerializedName;
 import com.nishi.developer.retrofitvolleyexample.Retrofit.POJO.Datum;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class MultipleResource {
+public class MultipleResource implements Serializable {
 
 //    @SerializedName annotation is used to specify the name of the field that’s in the JSON Response.
 

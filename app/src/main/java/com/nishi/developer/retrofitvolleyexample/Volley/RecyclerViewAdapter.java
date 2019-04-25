@@ -25,6 +25,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private RequestQueue mRequestQueue;
     private ImageLoader mImageLoader;
 
+  /*  We’ve initialized an ImageLoader that’ll display the Image from the URL in the NetworkImageView for each row.
+    The LRU cache is used for caching the image by implementing an ImageCache.
+    The argument inside the LruCache constructor is the number of cache entries limit.*/
+
 
     public RecyclerViewAdapter(Context context, List<Volley_UserList.UserDataList> itemList) {
         this.itemList = itemList;

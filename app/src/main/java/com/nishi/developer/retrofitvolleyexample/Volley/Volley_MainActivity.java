@@ -35,17 +35,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Volley_MainActivity extends AppCompatActivity
-        implements
-        View.OnClickListener {
+public class Volley_MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    Button btnGET, btnPOST, btnImageLoader, btnCustomRequest, btnImageRequest;
-    NetworkImageView networkImageView;
-    ImageView imageView;
-    ArrayList<Volley_UserList.UserDataList> mUserDataList = new ArrayList<>();
-    String BASE_URL = "https://reqres.in";
-    String IMAGE_URL = "https://www.android.com/static/2016/img/share/oreo-lg.jpg";
-    int numberOfRequestsCompleted;
+    private Button btnGET, btnPOST, btnImageLoader, btnCustomRequest, btnImageRequest;
+    private NetworkImageView networkImageView;
+    private ImageView imageView;
+    private ArrayList<Volley_UserList.UserDataList> mUserDataList = new ArrayList<>();
+    private String BASE_URL = "https://reqres.in";
+    private String IMAGE_URL = "https://www.android.com/static/2016/img/share/oreo-lg.jpg";
+    private int numberOfRequestsCompleted;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,10 +76,13 @@ public class Volley_MainActivity extends AppCompatActivity
                 break;
             case R.id.btnPOST:
                 POSTStringAndJSONRequest();
+                break;
             case R.id.btnImageLoader:
                 imageLoader();
+                break;
             case R.id.btnImageRequest:
                 imageRequest();
+                break;
             case R.id.btnCustomRequest:
                 customRequest();
                 break;
@@ -89,6 +90,7 @@ public class Volley_MainActivity extends AppCompatActivity
     }
 
 
+    /*We’ve created an instance of ErrorListener that’ll be used throughout the Activity.*/
     Response.ErrorListener errorListener = new Response.ErrorListener() {
         @Override
         public void onErrorResponse(VolleyError error) {
@@ -100,14 +102,25 @@ public class Volley_MainActivity extends AppCompatActivity
         }
     };
 
+
+    /* We’ve chained two requests in the RequestQueue.*/
     private void GETStringAndJSONRequest(String page_1, String page_2) {
 
         mUserDataList.clear();
         numberOfRequestsCompleted = 0;
         VolleyLog.DEBUG = true;
+
         RequestQueue queue = SingletonRequestQueue.getInstance(getApplicationContext()).getRequestQueue();
+
         String uri_page_one = String.format(BASE_URL + "/api/users?page=%1$s", page_1);
+
         final String uri_page_two = String.format(BASE_URL + "/api/users?page=%1$s", page_2);
+
+
+       /* The first Request is a StringRequest.
+        page acts as a URL encoded parameter in the API /api/users?.
+        The response is a JSONObject that’s serialized with Gson. We’ve set the priority of the StringRequest to low.
+        Thus, this request should finish at last(in cases when the response from the server is quick, the priority won’t work).*/
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, uri_page_one, new Response.Listener<String>() {
             @Override
@@ -125,13 +138,16 @@ public class Volley_MainActivity extends AppCompatActivity
 
             @Override
             public Priority getPriority() {
-                return Priority.LOW;
+                return Priority.IMMEDIATE;
             }
 
         };
 
         queue.add(stringRequest);
 
+   /*    The second Request is a JsonObjectRequest.
+        Since it is a GET request, we’ve set the request body as null(check the second parameter).
+        Priority is set to Immediate. Thus the JsonObjectRequest should complete first.*/
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(uri_page_two, null, new Response.Listener<JSONObject>() {
             @Override
@@ -161,6 +177,17 @@ public class Volley_MainActivity extends AppCompatActivity
 
         queue.add(jsonObjectRequest);
 
+        /*  We join the Lists returned from both the requests in mUserDataList ArrayList.*/
+
+        /*Inside the addRequestFinishedListener callback listener,
+                we check if both the requests are over(by checking the numberOfRequestsCompleted counter.*/
+
+        /* Besides, inside addRequestFinishedListener callback, we can retrieve the response from the Cache.Entry*/
+
+        /*Try setting setShouldCache() to false on the Requests and you find the response in the cache.*/
+
+        /*Finally the user data list retrieved from both the requests is passed to the RecyclerViewActivity.java.
+                This is where we’ll populate the ArrayList in a RecyclerView*/
 
         queue.addRequestFinishedListener(new RequestQueue.RequestFinishedListener<Object>() {
 
@@ -170,9 +197,8 @@ public class Volley_MainActivity extends AppCompatActivity
                     if (request.getCacheEntry() != null) {
                         String cacheValue = new String(request.getCacheEntry().data, "UTF-8");
                         VolleyLog.d(request.getCacheKey() + " " + cacheValue);
-
                     }
-                } catch (UnsupportedEncodingException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
 
@@ -185,7 +211,7 @@ public class Volley_MainActivity extends AppCompatActivity
 
     }
 
-
+    /*    This method would chain multiple POST requests in a RequestQueue.*/
     private void POSTStringAndJSONRequest() {
 
         RequestQueue queue = SingletonRequestQueue.getInstance(getApplicationContext()).getRequestQueue();
@@ -193,6 +219,9 @@ public class Volley_MainActivity extends AppCompatActivity
         VolleyLog.DEBUG = true;
         String uri = BASE_URL + "/api/users";
 
+
+        /*stringRequest – To POST parameters in a StringRequest,
+        we need to override getParams() and pass the parameters as a key value pair.*/
         StringRequest stringRequest = new StringRequest(Request.Method.POST, uri, new Response.Listener() {
             @Override
             public void onResponse(Object response) {
@@ -204,7 +233,7 @@ public class Volley_MainActivity extends AppCompatActivity
         }, errorListener) {
             @Override
             public Priority getPriority() {
-                return Priority.LOW;
+                return Priority.IMMEDIATE;
             }
 
             @Override
@@ -227,6 +256,10 @@ public class Volley_MainActivity extends AppCompatActivity
 
         };
 
+
+
+      /*  jsonObjectRequest – To POST parameters in a JsonObjectRequest
+        we pass the parameters inside a JSONObject and set them in the second parameter of the constructor.*/
 
         JSONObject jsonObject = new JSONObject();
         try {
@@ -259,6 +292,8 @@ public class Volley_MainActivity extends AppCompatActivity
             }
         };
 
+
+        /* stringRequestPOSTJSON – To POST a JSON request body in a StringRequest, we override the method getBody().*/
 
         StringRequest stringRequestPOSTJSON = new StringRequest(Request.Method.POST, uri, new Response.Listener() {
             @Override
@@ -334,7 +369,9 @@ public class Volley_MainActivity extends AppCompatActivity
         imageLoader.get(IMAGE_URL, ImageLoader.getImageListener(
                 networkImageView, R.mipmap.ic_launcher, R.mipmap.ic_launcher));
     }
-
+ /*getImageListener() handles the functionality of showing a default image until the network response is received,
+    at which point it will switch to either the actual image or the error image.
+    The arguments passed inside the listener are the view’s instance, default image drawable, error image drawable.*/
 
     private void imageRequest() {
         RequestQueue mRequestQueue = SingletonRequestQueue.getInstance(getApplicationContext()).getRequestQueue();
@@ -353,6 +390,8 @@ public class Volley_MainActivity extends AppCompatActivity
     }
 
 
+   /* We’ve created a CustomRequest named GsonRequest that serializes and converts the response into the POJO class internally.
+    Also, the CustomRequest takes the headers as a constructor argument too.*/
     private void customRequest() {
         mUserDataList.clear();
         RequestQueue mRequestQueue = SingletonRequestQueue.getInstance(getApplicationContext()).getRequestQueue();
@@ -361,26 +400,17 @@ public class Volley_MainActivity extends AppCompatActivity
         HashMap headers = new HashMap();
         headers.put("Content-Type", "application/x-www-form-urlencoded; charset=utf-8");
 
-        GsonRequest gsonRequest = new GsonRequest(url, Volley_UserList.class, headers, new Response.Listener() {
+        GsonRequest gsonRequest = new GsonRequest(url, Volley_UserList.class, headers, new Response.Listener<Volley_UserList>() {
             @Override
-            public void onResponse(Object response) {
-                GsonBuilder builder = new GsonBuilder();
-                Gson mGson = builder.create();
-                Volley_UserList userList = mGson.fromJson(String.valueOf(response), Volley_UserList.class);
-                mUserDataList.addAll(userList.userDataList);
-
-                // mUserDataList.addAll(response.userDataList);
-
+            public void onResponse(Volley_UserList response) {
+                mUserDataList.addAll(response.userDataList);
                 startActivity(new Intent(Volley_MainActivity.this, Volley_RecyclerViewActivity.class).putExtra("users", mUserDataList));
 
             }
-
-
         }, errorListener);
 
         mRequestQueue.add(gsonRequest);
 
     }
-
 
 }

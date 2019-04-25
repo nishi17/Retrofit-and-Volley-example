@@ -2,7 +2,9 @@ package com.nishi.developer.retrofitvolleyexample.Retrofit.POJO;
 
 import com.google.gson.annotations.SerializedName;
 
-public class DatumUserList {
+import java.io.Serializable;
+
+public class DatumUserList implements Serializable {
 
 
     @SerializedName("id")

@@ -42,7 +42,7 @@ public interface Retrofit_APIInterface {
 
     @FormUrlEncoded
     @POST("/api/users?")
-    Call<UserList> doCreateUserWithField(@Field("name") String name, @Field("job") String job);
+    Call<User> doCreateUserWithField(@Field("name") String name, @Field("job") String job);
 }
  /* we’ve defined some methods that perform HTTP requests with annotation.
     We’ve used a few test APIs from here

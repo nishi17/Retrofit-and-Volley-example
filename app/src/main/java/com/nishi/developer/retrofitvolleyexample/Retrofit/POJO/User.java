@@ -2,7 +2,9 @@ package com.nishi.developer.retrofitvolleyexample.Retrofit.POJO;
 
 import com.google.gson.annotations.SerializedName;
 
-public class User {
+import java.io.Serializable;
+
+public class User  implements Serializable {
     @SerializedName("name")
     public String name;
     @SerializedName("job")
